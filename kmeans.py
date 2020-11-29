@@ -1,6 +1,7 @@
 
 import dataset
 import numpy as np
+import time
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans as SK_KMeans
 from sklearn.datasets import load_iris
@@ -69,7 +70,8 @@ def create_fake_cluster(center, radius, no_points):
             current_no_of_points +=1
     return data
         
-    
+def print_stop_time(start_time):
+    print("--- Execution: %.2f seconds ---" % (round(time.time() - start_time, 2)))
 
 def main(*args, **kwargs):
     # c1 = create_fake_cluster((100,100), 10, 40)
@@ -84,13 +86,21 @@ def main(*args, **kwargs):
     data = dataset.read_data('dataset/Iris-1500.txt')['data']
 
     #my solution
+    kmeans_start_time = time.time()
+
     kmeans = KMeans(data, k = 3)
     kmeans.run()
+
+    print_stop_time(kmeans_start_time)
     centers = kmeans.get_centers()
     
     #sklearn solution
+    sk_kmeans_start_time = time.time()
+
     sk_kmeans = SK_KMeans(n_clusters = 3, init = "random")
     sk_kmeans.fit(data)
+
+    print_stop_time(sk_kmeans_start_time)
     sk_centers = sk_kmeans.cluster_centers_
 
     #plot data + centers
