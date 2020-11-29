@@ -1,4 +1,5 @@
 
+import dataset
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans as SK_KMeans
@@ -77,8 +78,10 @@ def main(*args, **kwargs):
     # c4 = create_fake_cluster((100, -100), 10, 40)
     # data = np.vstack((c1, c2, c3, c4))
     
-    iris_data = load_iris()
-    data = iris_data.data
+    #iris_data = load_iris()
+    #data = iris_data.data
+
+    data = dataset.read_data('dataset/Iris-1500.txt')['data']
 
     #my solution
     kmeans = KMeans(data, k = 3)
