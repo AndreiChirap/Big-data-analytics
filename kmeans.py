@@ -33,7 +33,7 @@ class KMeans:
         np.put_along_axis(self.__w, index_array[..., None], 1, axis=-1)
                     
     def __update_centroids(self):
-        self.__previousCenters = self.__centers
+        self.__previousCenters = self.__centers.copy()
         self.__centers = np.stack([ np.divide(np.sum(self.__data[self.__w[:,i]!=0], axis = 0), self.__w[:, i].sum()) for i in range(self.k) ], axis = 0)
 
     def __centroids_unchanged(self):
@@ -136,8 +136,6 @@ def main(*args, **kwargs):
     #cmeans = CMeans(C = 3, m=2, max_iter=300)
     #cmeans.fit(data)
     #cmeans_centers = cmeans.get_centers()
-
-      
 
     # #plot data + centers
     plt.scatter(data[:,0], data[:,1])
