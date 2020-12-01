@@ -1,9 +1,6 @@
 from numba import njit, prange
 from time import time
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
-from sklearn.cluster import KMeans as SK_KMeans
 
 
 @njit(parallel = True, fastmath=True)
