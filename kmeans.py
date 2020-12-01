@@ -14,9 +14,10 @@ import sys
 
 
 class KMeans:
-    def __init__(self, k = 4, max_iter = 15):
+    def __init__(self, k = 4, max_iter = 15, tolerance = 0.00000001):
         self.k = k
         self.max_iter = max_iter
+        self.tolerance = tolerance
         
     def get_centers(self):
         return self.__centers    
@@ -32,7 +33,12 @@ class KMeans:
         np.put_along_axis(self.__w, index_array[..., None], 1, axis=-1)
                     
     def __update_centroids(self):
+        self.__previousCenters = self.__centers
         self.__centers = np.stack([ np.divide(np.sum(self.__data[self.__w[:,i]!=0], axis = 0), self.__w[:, i].sum()) for i in range(self.k) ], axis = 0)
+
+    def __centroids_unchanged(self):
+        differences = np.abs(np.subtract(self.__centers, self.__previousCenters))
+        return (differences <= self.tolerance).sum() == np.prod(differences.shape)
     
     def fit(self, data):
         self.__data = data
@@ -41,9 +47,12 @@ class KMeans:
         self.__centers = self.__init_centers()
 
         t1 = time()
-        for _ in range(self.max_iter):
+        for i in range(self.max_iter):
             self.__update_w()
             self.__update_centroids()
+            if self.__centroids_unchanged():
+                print("Algorithm stopped at iteration: %s" % i)
+                break
         t2 = time()
         print(f"Kmeans time = {t2-t1}")
         
@@ -99,7 +108,11 @@ def create_fake_cluster(center, radius, no_points):
 
 def main(*args, **kwargs):
     
-    datasetPath = 'dataset/Iris-' + sys.argv[1] + '.txt'
+    datasetFile = '1500'
+    if sys.argv.count == 1:
+        datasetFile = sys.argv[1]
+
+    datasetPath = 'dataset/Iris-' + datasetFile + '.txt'
     print ("The script has the name %s" % (datasetPath))
     t1 = time()
     data = dataset.read_data(datasetPath)['data']
@@ -113,16 +126,16 @@ def main(*args, **kwargs):
     
     #sklearn solution
     sk_kmeans = SK_KMeans(n_clusters = 3)
-    t3 = time()
+    #t3 = time()
     sk_kmeans.fit(data)
-    t4 = time()
-    print(f"Kmeans SK time = {t4-t3}")
+    #t4 = time()
+    #print(f"Kmeans SK time = {t4-t3}")
     sk_centers = sk_kmeans.cluster_centers_
 
     #my solution CMeans
-    cmeans = CMeans(C = 3, m=2, max_iter=300)
-    cmeans.fit(data)
-    cmeans_centers = cmeans.get_centers()
+    #cmeans = CMeans(C = 3, m=2, max_iter=300)
+    #cmeans.fit(data)
+    #cmeans_centers = cmeans.get_centers()
 
       
 
@@ -130,7 +143,7 @@ def main(*args, **kwargs):
     plt.scatter(data[:,0], data[:,1])
     plt.scatter(centers[:,0], centers[:,1], color = "red")
     plt.scatter(sk_centers[:,0], sk_centers[:,1], color = "green")
-    plt.scatter(cmeans_centers[:,0], cmeans_centers[:,1], color = "yellow")
+    #plt.scatter(cmeans_centers[:,0], cmeans_centers[:,1], color = "yellow")
     plt.show()
 
 if __name__ == "__main__":
