@@ -14,7 +14,7 @@ import sys
 
 
 class KMeans:
-    def __init__(self, k = 4, max_iter = 15, tolerance = 0.00000001):
+    def __init__(self, k = 4, max_iter = 15, tolerance = 1e-4):
         self.k = k
         self.max_iter = max_iter
         self.tolerance = tolerance
@@ -142,7 +142,7 @@ def main(*args, **kwargs):
     # #plot data + centers
     plt.scatter(data[:,0], data[:,1])
     plt.scatter(centers[:,0], centers[:,1], color = "red")
-    plt.scatter(sk_centers[:,0], sk_centers[:,1], color = "green")
+    #plt.scatter(sk_centers[:,0], sk_centers[:,1], color = "green")
     #plt.scatter(cmeans_centers[:,0], cmeans_centers[:,1], color = "yellow")
     plt.show()
 
