@@ -31,14 +31,12 @@ class KMeansMultithreading:
     def __centroids_unchanged(self):
         differences = np.abs(np.subtract(self.__centers, self.__previous_centers))
         return (differences <= self.tolerance).sum() == np.prod(differences.shape)
-                
-                        
+                                   
     def fit(self, data):
         self.__data = data
         self.__no_samples = self.__data.shape[0]
         self.__w = np.zeros(shape = (self.__no_samples, self.k), dtype = np.uint8)
         self.__centers = self.__init_centers()
-        
         
         t1 = time()
         for i in range(self.max_iter):
@@ -50,6 +48,7 @@ class KMeansMultithreading:
                 break
         t2 = time()
         print(f"KMeans(multithreading) time = {t2-t1}")
+
     @staticmethod
     @njit(parallel = True, fastmath=True)
     def __fast_distances(k, data, centers):
@@ -77,7 +76,6 @@ class CMeansMultithreading:
     
     def get_partition(self):
         return self.__w         
-    
     
     @staticmethod  
     @njit(parallel=True, fastmath=True)
@@ -107,7 +105,6 @@ class CMeansMultithreading:
         differences = np.abs(np.subtract(self.__centers, self.__previous_centers))
         return (differences <= self.tolerance).sum() == np.prod(differences.shape)
                
-    
     def fit(self, data):
         self.__data = data
         self.__no_samples = self.__data.shape[0]
@@ -126,8 +123,6 @@ class CMeansMultithreading:
         t2 = time()
         print(f"CMeans(multithreading) time = {t2-t1}")
             
-
-
 class KMeans:
     def __init__(self, k=4, max_iter=15, tolerance=1e-4):
         self.k = k
@@ -187,7 +182,6 @@ class CMeans:
     def get_partition(self):
         return self.__w  
     
-          
     def __update_centroids(self):
         self.__centers = np.stack([np.divide(np.sum(np.multiply(self.__data, np.power(self.__w[:,i], self.m)[..., None]) ,axis = 0), np.sum(np.power(self.__w[:,i], self.m))) for i in range(self.C)], axis= 0)
     
