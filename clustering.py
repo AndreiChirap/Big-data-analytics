@@ -7,6 +7,7 @@ import numpy as np
 def fast_norm(vec):
     return np.array([np.sqrt(np.sum(np.power(vec[i,:], 2))) for i in prange(vec.shape[0])])
 
+
 class KMeansMultithreading:
     def __init__(self, k=4, max_iter=15, tolerance=1e-4):
         self.k = k
@@ -60,9 +61,6 @@ class KMeansMultithreading:
         for i in prange(k):
             centers[i] = np.divide(np.sum(data[w[:,i] !=0 ], axis=0), w[:,i].sum())
     
-    
-   
-
 
 class CMeansMultithreading:
     def __init__(self, C=3, m=2, max_iter=15, tolerance=1e-4):
@@ -122,6 +120,7 @@ class CMeansMultithreading:
                 break
         t2 = time()
         print(f"CMeans(multithreading) time = {t2-t1}")
+
             
 class KMeans:
     def __init__(self, k=4, max_iter=15, tolerance=1e-4):
