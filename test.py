@@ -1,7 +1,6 @@
 from clustering import KMeansMultithreading, CMeansMultithreading, KMeans, CMeans
 from sklearn.datasets import load_iris
 
-
 import matplotlib.pyplot as plt
 
 def main():
