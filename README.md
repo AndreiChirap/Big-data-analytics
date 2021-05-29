@@ -1,9 +1,2 @@
-# Big-data-analytics
-Andrei - validare kmeans \
-Alin - review Kmeans + FCM + timer \
-Attila - citire din fisiere \
-Daniel - review Kmeans + FCM
-
-Intrebari:
-1) Output file format ???
-2) Multithreading points ???
+# Project description
+A simple implementation of KMeans and FuzzyCMeans algorithms with support for multithreading.
