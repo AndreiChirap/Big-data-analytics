@@ -3,12 +3,12 @@ from time import time
 import numpy as np
 
 
-@njit(parallel = True, fastmath=True)
+@njit(parallel=True, fastmath=True)
 def fast_norm(vec):
     return np.array([np.sqrt(np.sum(np.power(vec[i,:], 2))) for i in prange(vec.shape[0])])
 
 class KMeansMultithreading:
-    def __init__(self, k = 4, max_iter = 15, tolerance = 1e-4):
+    def __init__(self, k=4, max_iter=15, tolerance=1e-4):
         self.k = k
         self.max_iter = max_iter
         self.tolerance = tolerance
@@ -20,13 +20,13 @@ class KMeansMultithreading:
         return self.__w
     
     def __init_centers(self):
-        random_centers = np.random.randint(low = 0, high = self.__no_samples, size = (self.k))
+        random_centers = np.random.randint(low=0, high=self.__no_samples, size=self.k)
         return self.__data[random_centers]
     
     def __update_w(self):
         self.__w[...] = 0
-        distances = np.stack([j for j in KMeansMultithreading.__fast_distances(self.k, self.__data, self.__centers)], axis = -1)
-        np.put_along_axis(self.__w, np.argmin(distances, axis = -1)[..., None], 1, axis=-1)
+        distances = np.stack([j for j in KMeansMultithreading.__fast_distances(self.k, self.__data, self.__centers)], axis=-1)
+        np.put_along_axis(self.__w, np.argmin(distances, axis=-1)[..., None], 1, axis=-1)
         
     def __centroids_unchanged(self):
         differences = np.abs(np.subtract(self.__centers, self.__previous_centers))
@@ -49,7 +49,7 @@ class KMeansMultithreading:
                 print(f"Algorithm stopped at iteration: {i}")
                 break
         t2 = time()
-        print(f"Parallel KMeans time = {t2-t1}")
+        print(f"KMeans(multithreading) time = {t2-t1}")
     @staticmethod
     @njit(parallel = True, fastmath=True)
     def __fast_distances(k, data, centers):
@@ -66,7 +66,7 @@ class KMeansMultithreading:
 
 
 class CMeansMultithreading:
-    def __init__(self, C = 3, m = 2, max_iter = 15, tolerance = 1e-4):
+    def __init__(self, C=3, m=2, max_iter=15, tolerance=1e-4):
         self.C = C
         self.m = m
         self.max_iter = max_iter
@@ -80,7 +80,7 @@ class CMeansMultithreading:
     
     
     @staticmethod  
-    @njit(parallel = True, fastmath=True)
+    @njit(parallel=True, fastmath=True)
     def __fast_update_centroids(c, m, data, w, centers):
         for k in prange(c):
             num = np.zeros_like(centers[k])
@@ -91,7 +91,7 @@ class CMeansMultithreading:
             centers[k] = num/denom
         
     @staticmethod    
-    @njit(parallel = True, fastmath=True)        
+    @njit(parallel=True, fastmath=True)        
     def __fast_update_w(c, m, data, w, centers):
         for i in prange(data.shape[0]):
             for j in prange(c):
@@ -124,12 +124,12 @@ class CMeansMultithreading:
                 print(f"Algorithm stopped at iteration: {i}")
                 break
         t2 = time()
-        print(f"Parallel Cmeans time = {t2-t1}")
+        print(f"CMeans(multithreading) time = {t2-t1}")
             
 
 
 class KMeans:
-    def __init__(self, k = 4, max_iter = 15, tolerance = 1e-4):
+    def __init__(self, k=4, max_iter=15, tolerance=1e-4):
         self.k = k
         self.max_iter = max_iter
         self.tolerance = tolerance
@@ -141,16 +141,16 @@ class KMeans:
         return self.__w         
         
     def __init_centers(self):
-        random_centers = np.random.randint(low = 0, high = self.__no_samples, size = (self.k))
+        random_centers = np.random.randint(low=0, high=self.__no_samples, size=self.k)
         return self.__data[random_centers]
            
     def __update_w(self):
         self.__w[...] = 0
-        distances = np.stack([np.linalg.norm(self.__data - self.__centers[i], axis = -1) for i in range(self.k)], axis = -1)
+        distances = np.stack([np.linalg.norm(self.__data - self.__centers[i], axis=-1) for i in range(self.k)], axis=-1)
         np.put_along_axis(self.__w, np.argmin(distances, axis = -1)[..., None], 1, axis=-1)
                     
     def __update_centroids(self):
-        self.__centers = np.stack([ np.divide(np.sum(self.__data[self.__w[:,i]!=0], axis = 0), self.__w[:, i].sum()) for i in range(self.k) ], axis = 0)
+        self.__centers = np.stack([ np.divide(np.sum(self.__data[self.__w[:,i] !=0 ], axis=0), self.__w[:, i].sum()) for i in range(self.k) ], axis=0)
     
     def __centroids_unchanged(self):
         differences = np.abs(np.subtract(self.__centers, self.__previous_centers))
@@ -159,7 +159,7 @@ class KMeans:
     def fit(self, data):
         self.__data = data
         self.__no_samples = self.__data.shape[0]
-        self.__w = np.zeros(shape = (self.__no_samples, self.k), dtype = np.uint8)
+        self.__w = np.zeros(shape = (self.__no_samples, self.k), dtype=np.uint8)
         self.__centers = self.__init_centers()
 
         t1 = time()
@@ -171,7 +171,7 @@ class KMeans:
                 print(f"Algorithm stopped at iteration: {i}")
                 break
         t2 = time()
-        print(f"Sequential KMeans time = {t2-t1}")
+        print(f"KMeans(iterative) time = {t2-t1}")
 
 
 class CMeans:
@@ -215,6 +215,4 @@ class CMeans:
                 break
             
         t2 = time()
-        print(f"Sequential Cmeans time = {t2-t1}")
-            
-   
+        print(f"CMeans(iterative) time = {t2-t1}")
