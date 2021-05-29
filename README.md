@@ -1,7 +1,7 @@
 # Project description
-Clustering algorithms implementation in python from scratch
+Various clustering algorithms implemented in python from scratch
 # Supported algorithms
 1. KMeans - iterative 
-2. Kmeans - multithreading, using Numba
+2. KMeans - multi-threading, using Numba
 3. Fuzzy CMeans - iterative
-4. Fuzzy CMeans - multithreading, using Numba
+4. Fuzzy CMeans - multi-threading, using Numba

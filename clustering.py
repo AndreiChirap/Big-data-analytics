@@ -48,7 +48,7 @@ class KMeansMultithreading:
                 print(f"Algorithm stopped at iteration: {i}")
                 break
         t2 = time()
-        print(f"KMeans(multithreading) time = {t2-t1}")
+        print(f"KMeans(multi-threading) time = {t2-t1}")
 
     @staticmethod
     @njit(parallel = True, fastmath=True)
@@ -119,9 +119,9 @@ class CMeansMultithreading:
                 print(f"Algorithm stopped at iteration: {i}")
                 break
         t2 = time()
-        print(f"CMeans(multithreading) time = {t2-t1}")
+        print(f"CMeans(multi-threading) time = {t2-t1}")
 
-            
+
 class KMeans:
     def __init__(self, k=4, max_iter=15, tolerance=1e-4):
         self.k = k
